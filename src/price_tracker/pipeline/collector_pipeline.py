@@ -3,8 +3,11 @@
 from typing import Any
 
 from price_tracker.collectors.base import BaseCollector
-from price_tracker.normalization import normalize_domain, normalize_product_name
-from price_tracker.normalization import normalize_seller_name
+from price_tracker.normalization import (
+    normalize_domain,
+    normalize_product_name,
+    normalize_seller_name,
+)
 
 
 class CollectorPipeline:
