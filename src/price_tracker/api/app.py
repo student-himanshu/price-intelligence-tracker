@@ -2,6 +2,14 @@
 
 from fastapi import FastAPI
 
+from price_tracker.api.routes import (
+    health_router,
+    listings_router,
+    prices_router,
+    products_router,
+    sellers_router,
+)
+
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
@@ -13,6 +21,12 @@ def create_app() -> FastAPI:
             "and tracking product prices."
         ),
     )
+
+    app.include_router(health_router)
+    app.include_router(products_router)
+    app.include_router(sellers_router)
+    app.include_router(listings_router)
+    app.include_router(prices_router)
 
     return app
 
