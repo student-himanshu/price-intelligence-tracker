@@ -17,3 +17,18 @@ class SellerRepository:
         statement = select(Seller).where(Seller.id == seller_id)
 
         return self.session.scalar(statement)
+
+    def get_by_name(self, seller_name: str) -> Seller | None:
+        """Return a seller by name."""
+        statement = select(Seller).where(
+            Seller.seller_name == seller_name,
+        )
+
+        return self.session.scalar(statement)
+
+    def add(self, seller: Seller) -> Seller:
+        """Add a seller and flush it to the database session."""
+        self.session.add(seller)
+        self.session.flush()
+
+        return seller

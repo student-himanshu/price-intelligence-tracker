@@ -17,3 +17,21 @@ class ProductRepository:
         statement = select(Product).where(Product.id == product_id)
 
         return self.session.scalar(statement)
+
+    def get_by_normalized_name(
+        self,
+        normalized_name: str,
+    ) -> Product | None:
+        """Return a product by its normalized name."""
+        statement = select(Product).where(
+            Product.normalized_name == normalized_name,
+        )
+
+        return self.session.scalar(statement)
+
+    def add(self, product: Product) -> Product:
+        """Add a product and flush it to the database session."""
+        self.session.add(product)
+        self.session.flush()
+
+        return product
