@@ -1,5 +1,7 @@
 """API route modules."""
 
+from price_tracker.api.routes.analytics import router as analytics_router
+from price_tracker.api.routes.forecast import router as forecast_router
 from price_tracker.api.routes.health import router as health_router
 from price_tracker.api.routes.listings import router as listings_router
 from price_tracker.api.routes.prices import router as prices_router
@@ -7,6 +9,8 @@ from price_tracker.api.routes.products import router as products_router
 from price_tracker.api.routes.sellers import router as sellers_router
 
 __all__ = [
+    "analytics_router",
+    "forecast_router",
     "health_router",
     "listings_router",
     "prices_router",

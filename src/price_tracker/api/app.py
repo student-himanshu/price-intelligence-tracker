@@ -3,6 +3,8 @@
 from fastapi import FastAPI
 
 from price_tracker.api.routes import (
+    analytics_router,
+    forecast_router,
     health_router,
     listings_router,
     prices_router,
@@ -27,6 +29,8 @@ def create_app() -> FastAPI:
     app.include_router(sellers_router)
     app.include_router(listings_router)
     app.include_router(prices_router)
+    app.include_router(analytics_router)
+    app.include_router(forecast_router)
 
     return app
 
