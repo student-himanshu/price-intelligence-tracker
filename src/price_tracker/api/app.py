@@ -7,6 +7,7 @@ from price_tracker.api.routes import (
     forecast_router,
     health_router,
     listings_router,
+    meta_router,
     prices_router,
     products_router,
     sellers_router,
@@ -23,7 +24,7 @@ def create_app() -> FastAPI:
             "and tracking product prices."
         ),
     )
-
+    app.include_router(meta_router)
     app.include_router(health_router)
     app.include_router(products_router)
     app.include_router(sellers_router)
