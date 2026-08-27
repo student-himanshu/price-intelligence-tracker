@@ -11,3 +11,7 @@ def initialize_database() -> None:
 
     engine = get_engine()
     Base.metadata.create_all(bind=engine)
+
+
+if __name__ == "__main__":
+    initialize_database()
