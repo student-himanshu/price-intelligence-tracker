@@ -1,4 +1,5 @@
 """Tests for the listing API endpoints."""
+from datetime import UTC, datetime
 
 from fastapi.testclient import TestClient
 
@@ -16,6 +17,8 @@ class FakeListing:
     url = "https://example.com/product/10"
     external_product_id = "EXT-10"
     availability = True
+    created_at = datetime(2026, 8, 27, 10, 0, tzinfo=UTC)
+    updated_at = datetime(2026, 8, 27, 10, 0, tzinfo=UTC)
 
 
 class FakeListingService:
@@ -49,6 +52,8 @@ def test_get_listing(monkeypatch) -> None:
         "url": "https://example.com/product/10",
         "external_product_id": "EXT-10",
         "availability": True,
+        "created_at": "2026-08-27T10:00:00Z",
+        "updated_at": "2026-08-27T10:00:00Z",
     }
 
 

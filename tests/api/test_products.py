@@ -1,5 +1,8 @@
 """Tests for the product API endpoints."""
 
+
+from datetime import UTC, datetime
+
 from fastapi.testclient import TestClient
 
 from price_tracker.api.app import app
@@ -13,7 +16,8 @@ class FakeProduct:
     model = "iPhone 15"
     normalized_name = "apple iphone 15"
     category = "Smartphone"
-
+    created_at = datetime(2026, 8, 27, 10, 0, tzinfo=UTC)
+    updated_at = datetime(2026, 8, 27, 10, 0, tzinfo=UTC)
 
 class FakeProductService:
     """Fake product service for API tests."""
@@ -43,12 +47,14 @@ def test_get_product(monkeypatch) -> None:
 
     assert response.status_code == 200
     assert response.json() == {
-        "id": 1,
-        "brand": "Apple",
-        "model": "iPhone 15",
-        "normalized_name": "apple iphone 15",
-        "category": "Smartphone",
-    }
+    "id": 1,
+    "brand": "Apple",
+    "model": "iPhone 15",
+    "normalized_name": "apple iphone 15",
+    "category": "Smartphone",
+    "created_at": "2026-08-27T10:00:00Z",
+    "updated_at": "2026-08-27T10:00:00Z",
+}
 
 
 def test_get_product_not_found(monkeypatch) -> None:

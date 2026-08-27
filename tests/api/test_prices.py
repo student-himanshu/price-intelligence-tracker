@@ -17,8 +17,9 @@ class FakePriceHistory:
     listing_id = 10
     price = Decimal("49999.00")
     original_price = Decimal("54999.00")
+    discount_percentage = None
     currency = "INR"
-    recorded_at = datetime(2026, 8, 27, 10, 30, tzinfo=UTC)
+    collected_at = datetime(2026, 8, 27, 10, 30, tzinfo=UTC)
 
 
 class FakePriceHistoryService:
@@ -46,13 +47,15 @@ def test_get_price_history(monkeypatch) -> None:
 
     assert response.status_code == 200
     assert response.json() == {
-    "id": 1,
-    "listing_id": 10,
-    "price": "49999.00",
-    "original_price": "54999.00",
-    "currency": "INR",
-    "recorded_at": "2026-08-27T10:30:00Z",
-}
+        "id": 1,
+        "listing_id": 10,
+        "price": "49999.00",
+        "original_price": "54999.00",
+        "discount_percentage": None,
+        "currency": "INR",
+        "collected_at": "2026-08-27T10:30:00Z",
+    }
+    
 
 
 def test_get_price_history_not_found(monkeypatch) -> None:

@@ -1,5 +1,7 @@
 """Tests for the seller API endpoints."""
 
+from datetime import UTC, datetime
+
 from fastapi.testclient import TestClient
 
 from price_tracker.api.app import app
@@ -13,7 +15,9 @@ class FakeSeller:
     id = 1
     seller_name = "Amazon"
     domain = "amazon.in"
-
+    created_at = datetime(2026, 8, 27, 10, 0, tzinfo=UTC)
+    updated_at = datetime(2026, 8, 27, 10, 0, tzinfo=UTC)
+    
 
 class FakeSellerService:
     """Fake seller service for API tests."""
@@ -43,6 +47,8 @@ def test_get_seller(monkeypatch) -> None:
         "id": 1,
         "seller_name": "Amazon",
         "domain": "amazon.in",
+        "created_at": "2026-08-27T10:00:00Z",
+        "updated_at": "2026-08-27T10:00:00Z",
     }
 
 
