@@ -1,10 +1,12 @@
 """Pipeline for persisting collected price data."""
-
+from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
 from sqlalchemy.orm import Session
 
+from price_tracker.alerts.service import AlertService
+from price_tracker.notifications.service import NotificationService
 from price_tracker.schemas.listing import ListingCreate
 from price_tracker.schemas.price_history import PriceHistoryCreate
 from price_tracker.schemas.product import ProductCreate
@@ -17,17 +19,15 @@ from price_tracker.services.seller_service import SellerService
 
 class PersistencePipeline:
     """Persist normalized collector records into the database."""
-
     def __init__(self, session: Session) -> None:
+        self.session = session
         self.product_service = ProductService(session)
         self.seller_service = SellerService(session)
         self.listing_service = ListingService(session)
         self.price_history_service = PriceHistoryService(session)
-
     def persist(self, records: list[dict[str, Any]]) -> int:
-        """Persist records and return the number of processed records."""
+        """Persist records and process triggered price alerts."""
         processed = 0
-
         for record in records:
             product = self.product_service.get_or_create(
                 ProductCreate(
@@ -37,25 +37,24 @@ class PersistencePipeline:
                     category=record.get("category"),
                 ),
             )
-
             seller = self.seller_service.get_or_create(
                 SellerCreate(
                     seller_name=record["seller_name"],
                     domain=record.get("seller_domain"),
                 ),
             )
-
             listing = self.listing_service.get_or_create(
                 ListingCreate(
                     product_id=product.id,
                     seller_id=seller.id,
                     url=record["url"],
-                    external_product_id=record.get("external_product_id"),
+                    external_product_id=record.get(
+                        "external_product_id",
+                    ),
                     availability=record.get("availability", True),
                 ),
             )
-
-            self.price_history_service.record(
+            price_history = self.price_history_service.record(
                 PriceHistoryCreate(
                     listing_id=listing.id,
                     price=Decimal(str(record["price"])),
@@ -67,7 +66,19 @@ class PersistencePipeline:
                     currency=record.get("currency", "INR"),
                 ),
             )
-
+            triggered_alerts = AlertService.evaluate(
+                self.session,
+                product,
+                price_history.price,
+            )
+            for alert in triggered_alerts:
+                NotificationService.notify_if_triggered(
+                    alert=alert,
+                    product=product,
+                    current_price=price_history.price,
+                    currency=price_history.currency,
+                )
+                alert.is_active = False
+                alert.triggered_at = datetime.utcnow()
             processed += 1
-
         return processed

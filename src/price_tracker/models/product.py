@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, Index, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from price_tracker.database.base import Base
 
@@ -46,6 +46,12 @@ class Product(Base):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
+    )
+
+    price_alerts = relationship(
+        "PriceAlert",
+        back_populates="product",
+        cascade="all, delete-orphan",
     )
 
     __table_args__ = (

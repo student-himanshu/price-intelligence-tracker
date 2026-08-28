@@ -18,6 +18,12 @@ class ProductRepository:
 
         return self.session.scalar(statement)
 
+    def list_all(self) -> list[Product]:
+        """Return all products ordered by ID."""
+        statement = select(Product).order_by(Product.id)
+
+        return list(self.session.scalars(statement).all())
+
     def get_by_normalized_name(
         self,
         normalized_name: str,

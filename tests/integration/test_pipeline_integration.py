@@ -1,15 +1,25 @@
 """Integration tests for the complete price collection pipeline."""
 from sqlalchemy import delete
+
 from price_tracker.collectors.demo import DemoCollector
 from price_tracker.database.base import Base
 from price_tracker.database.engine import get_engine
 from price_tracker.database.session import get_session_factory
-from price_tracker.models import Listing, PriceHistory, Product, Seller
+from price_tracker.models import (
+    Listing,
+    PriceAlert,
+    PriceHistory,
+    Product,
+    Seller,
+)
 from price_tracker.pipeline.orchestrator import PipelineOrchestrator
+
+
 def _cleanup_demo_data() -> None:
     """Remove demo pipeline data from the integration database."""
     session = get_session_factory()()
     try:
+        session.execute(delete(PriceAlert))
         session.execute(delete(PriceHistory))
         session.execute(delete(Listing))
         session.execute(delete(Product))
